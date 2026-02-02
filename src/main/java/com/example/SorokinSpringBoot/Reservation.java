@@ -4,7 +4,7 @@ import com.example.SorokinSpringBoot.enums.ReservationStatus;
 
 import java.time.LocalDate;
 
-record Reservation(
+public record Reservation(
         Long id,
         Long userId,
         Long roomId,

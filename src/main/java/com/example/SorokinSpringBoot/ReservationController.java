@@ -15,9 +15,10 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    public String getReservationById(
+    public Reservation getReservationById(
             @PathVariable("id") Long id
     ){
-        return reservationService.getReservationById();
+        System.out.println("Reservation with id " + id);
+        return reservationService.getReservationById(id);
     }
 }
