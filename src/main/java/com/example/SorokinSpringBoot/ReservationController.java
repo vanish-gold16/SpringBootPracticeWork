@@ -1,6 +1,7 @@
 package com.example.SorokinSpringBoot;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -12,5 +13,8 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-
+    @GetMapping
+    public String getReservationById(){
+        return reservationService.getReservationById();
+    }
 }
