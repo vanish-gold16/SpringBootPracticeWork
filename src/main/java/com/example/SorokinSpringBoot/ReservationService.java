@@ -1,10 +1,9 @@
 package com.example.SorokinSpringBoot;
 
 import com.example.SorokinSpringBoot.enums.ReservationStatus;
+import com.example.SorokinSpringBoot.models.Reservation;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +22,6 @@ public class ReservationService {
     }
 
     public Reservation getReservationById(Long id){
-
-        if(!reservationMap.containsKey(id)){
-            throw new NoSuchElementException("Reservation " + id + " not found");
-        }
 
         return reservationMap.get(id);
     }

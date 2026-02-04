@@ -1,4 +1,4 @@
-package com.example.SorokinSpringBoot;
+package com.example.SorokinSpringBoot.models;
 
 import com.example.SorokinSpringBoot.enums.ReservationStatus;
 
