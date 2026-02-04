@@ -46,4 +46,13 @@ public class ReservationController {
                 .body(reservationService.createReservation(reservationToCreate));
     }
 
+    @PutMapping("{id}/edit")
+    public ResponseEntity<Reservation> editReservation(
+            @PathVariable ("id") Long id,
+            @RequestBody Reservation reservationToEdit
+    ){
+        logger.info("Called editReservation " + reservationToEdit);
+        var updated = reservationService.updateReservation(id, reservationToEdit);
+        return ResponseEntity.status(HttpStatus.OK).body(updated);
+    }
 }
