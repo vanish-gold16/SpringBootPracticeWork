@@ -50,7 +50,7 @@ public class ReservationService {
         if(!reservationMap.containsKey(id)) throw new NoSuchElementException("This reservation doe not exist");
         var reservation = reservationMap.get(id);
         if(reservation.status() != ReservationStatus.PENDING)
-            throw new NoSuchElementException("You can't edit pended reservation");
+            throw new NoSuchElementException("Can't modify reservation. Status=" + reservation.status());
         var editedReservation = new Reservation(
                 reservation.id(),
                 reservationToEdit.userId(),
@@ -68,4 +68,43 @@ public class ReservationService {
         if(!reservationMap.containsKey(id)) throw new NoSuchElementException("This reservation doe not exist");
         reservationMap.remove(id);
     }
+
+    public Reservation approveReservation(Long id) {
+        if(!reservationMap.containsKey(id)) throw new NoSuchElementException("This reservation doe not exist");
+
+        var reservation = reservationMap.get(id);
+
+        if(reservation.status() != ReservationStatus.PENDING)
+            throw new NoSuchElementException("Can't approve reservation. Status=" + reservation.status());
+
+        var isConflict = isReservationConflict(reservation);
+        if(isConflict){
+            throw new NoSuchElementException("Can't approve reservation due to conflict. Status=" + reservation.status());
+        }
+        var approvedReservation = new Reservation(
+                reservation.id(),
+                reservation.userId(),
+                reservation.roomId(),
+                reservation.startDate(),
+                reservation.endDate(),
+                ReservationStatus.CONFIRMED
+        );
+        reservationMap.put(reservation.id(), approvedReservation);
+        return approvedReservation;
+    }
+
+    private boolean isReservationConflict(Reservation reservation){
+        for(Reservation existingReservation : reservationMap.values()){
+            if(reservation.id().equals(existingReservation.id()) &&
+               !reservation.roomId().equals(existingReservation.roomId()) &&
+               !existingReservation.status().equals(ReservationStatus.CONFIRMED))
+                continue;
+            if(reservation.startDate().isBefore(existingReservation.endDate())
+            && existingReservation.startDate().isBefore(reservation.endDate()))
+                return true;
+        }
+
+        return false;
+    }
+
 }
