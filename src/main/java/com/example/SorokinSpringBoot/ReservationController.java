@@ -2,9 +2,7 @@ package com.example.SorokinSpringBoot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,9 +25,18 @@ public class ReservationController {
         return reservationService.getReservationById(id);
     }
 
-    @GetMapping()
+    @GetMapping("/")
     public List<Reservation> getAllReservations(){
         logger.info("Called getAllReservations");
         return reservationService.findAllReservations();
     }
+
+    @PostMapping
+    public Reservation createReservation(
+            @RequestBody Reservation reservationToCreate
+    ){
+        logger.info("Called createReservation " + reservationToCreate);
+        return reservationService.createReservation(reservationToCreate);
+    }
+
 }

@@ -9,36 +9,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class ReservationService {
 
-    private final Map<Long, Reservation> reservationMap =  Map.of(
-            1L, new Reservation(
-                    1L,
-                    1L,
-                    40L,
-                    LocalDate.now(),
-                    LocalDate.now().plusDays(5),
-                    ReservationStatus.CONFIRMED
-            ),
-            2L, new Reservation(
-                    2L,
-                    10L,
-                    20L,
-                    LocalDate.now(),
-                    LocalDate.now().plusDays(5),
-                    ReservationStatus.CONFIRMED
-            ),
-            3L, new Reservation(
-                    3L,
-                    4L,
-                    100L,
-                    LocalDate.now(),
-                    LocalDate.now().plusDays(5),
-                    ReservationStatus.CONFIRMED
-            )
-    );
+    private final Map<Long, Reservation> reservationMap;
+    private final AtomicLong idCounter;
+
+    public ReservationService() {
+        this.reservationMap = new HashMap<>();
+        idCounter = new AtomicLong();
+    }
 
     public Reservation getReservationById(Long id){
 
@@ -51,5 +33,21 @@ public class ReservationService {
 
     public List<Reservation> findAllReservations() {
         return reservationMap.values().stream().toList();
+    }
+
+    public Reservation createReservation(Reservation reservationToCreate) {
+        if(reservationToCreate.id() != null && reservationToCreate.status() != null){
+            throw new IllegalArgumentException("ID and status should bew empty!");
+        }
+        var newReservation = new Reservation(
+                idCounter.incrementAndGet(),
+                reservationToCreate.userId(),
+                reservationToCreate.roomId(),
+                reservationToCreate.startDate(),
+                reservationToCreate.endDate(),
+                ReservationStatus.PENDING
+        );
+        reservationMap.put(newReservation.id(), newReservation);
+        return newReservation;
     }
 }
