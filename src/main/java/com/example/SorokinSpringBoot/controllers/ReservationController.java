@@ -28,8 +28,13 @@ public class ReservationController {
             @PathVariable("id") Long id
     ){
         logger.info("Called getReservationById " + id);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(reservationService.getReservationById(id));
+        try{
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(reservationService.getReservationById(id));
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
     }
 
     @GetMapping("reservations/")
@@ -53,8 +58,12 @@ public class ReservationController {
             @RequestBody Reservation reservationToEdit
     ){
         logger.info("Called editReservation " + reservationToEdit);
-        var updated = reservationService.updateReservation(id, reservationToEdit);
-        return ResponseEntity.ok(updated);
+        try{
+            var updated = reservationService.editReservation(id, reservationToEdit);
+            return ResponseEntity.ok(updated);
+        }catch(NoSuchElementException e){
+            return ResponseEntity.status(404).build();
+        }
     }
 
     @DeleteMapping("/{id}/delete")

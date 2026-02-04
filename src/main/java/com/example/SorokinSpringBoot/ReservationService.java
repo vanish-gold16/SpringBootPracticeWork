@@ -46,8 +46,22 @@ public class ReservationService {
         return newReservation;
     }
 
-    public Reservation updateReservation(Long id, Reservation reservationToEdit) {
-        return null;
+    public Reservation editReservation(Long id, Reservation reservationToEdit) {
+        if(!reservationMap.containsKey(id)) throw new NoSuchElementException("This reservation doe not exist");
+        var reservation = reservationMap.get(id);
+        if(reservation.status() != ReservationStatus.PENDING)
+            throw new NoSuchElementException("You can't edit pended reservation");
+        var editedReservation = new Reservation(
+                reservation.id(),
+                reservationToEdit.userId(),
+                reservationToEdit.roomId(),
+                reservationToEdit.startDate(),
+                reservationToEdit.endDate(),
+                ReservationStatus.PENDING
+        );
+        reservationMap.put(reservation.id(), editedReservation);
+        return editedReservation;
+
     }
 
     public void deleteReservation(Long id) {
