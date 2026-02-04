@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/reservations")
@@ -53,6 +54,19 @@ public class ReservationController {
     ){
         logger.info("Called editReservation " + reservationToEdit);
         var updated = reservationService.updateReservation(id, reservationToEdit);
-        return ResponseEntity.status(HttpStatus.OK).body(updated);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<Void> deleteReservation(
+            @PathVariable("id") Long id
+    ){
+        logger.info("Called deleteReservation " + id);
+        try{
+            reservationService.deleteReservation(id);
+            return ResponseEntity.ok().build();
+        }catch(NoSuchElementException e){
+            return ResponseEntity.status(404).build();
+        }
     }
 }
