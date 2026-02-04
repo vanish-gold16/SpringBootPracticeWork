@@ -95,10 +95,9 @@ public class ReservationService {
 
     private boolean isReservationConflict(Reservation reservation){
         for(Reservation existingReservation : reservationMap.values()){
-            if(reservation.id().equals(existingReservation.id()) &&
-               !reservation.roomId().equals(existingReservation.roomId()) &&
-               !existingReservation.status().equals(ReservationStatus.CONFIRMED))
-                continue;
+            if(reservation.id().equals(existingReservation.id())) continue;
+            if(reservation.roomId().equals(existingReservation.roomId())) continue;
+            if(existingReservation.status().equals(ReservationStatus.CONFIRMED)) continue;
             if(reservation.startDate().isBefore(existingReservation.endDate())
             && existingReservation.startDate().isBefore(reservation.endDate()))
                 return true;

@@ -37,13 +37,13 @@ public class ReservationController {
 
     }
 
-    @GetMapping("reservations/")
+    @GetMapping
     public ResponseEntity<List<Reservation>> getAllReservations(){
         logger.info("Called getAllReservations");
         return ResponseEntity.ok(reservationService.findAllReservations());
     }
 
-    @PostMapping("reservations/")
+    @PostMapping
     public ResponseEntity<Reservation> createReservation(
             @RequestBody Reservation reservationToCreate
     ){
@@ -52,7 +52,7 @@ public class ReservationController {
                 .body(reservationService.createReservation(reservationToCreate));
     }
 
-    @PutMapping("{id}/edit")
+    @PutMapping("/{id}/edit")
     public ResponseEntity<Reservation> editReservation(
             @PathVariable ("id") Long id,
             @RequestBody Reservation reservationToEdit
