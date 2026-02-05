@@ -1,6 +1,7 @@
 package com.example.SorokinSpringBoot;
 
 import com.example.SorokinSpringBoot.enums.ReservationStatus;
+import com.example.SorokinSpringBoot.models.ReservaionEntity;
 import com.example.SorokinSpringBoot.models.Reservation;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +16,10 @@ public class ReservationService {
 
     private final Map<Long, Reservation> reservationMap;
     private final AtomicLong idCounter;
+    private ReservationRepository repository;
 
-    public ReservationService() {
+    public ReservationService(ReservationRepository repository) {
+        this.repository = repository;
         this.reservationMap = new HashMap<>();
         idCounter = new AtomicLong();
     }
@@ -27,6 +30,20 @@ public class ReservationService {
     }
 
     public List<Reservation> findAllReservations() {
+
+        List<ReservaionEntity> allEntities = repository.findAll();
+
+        List<Reservation> reservationList = allEntities.stream()
+                .map(it ->
+                        new Reservation(
+                                it.getId(),
+                                it.getUserId(),
+                                it.getRoomId(),
+                                it.getStartDate(),
+                                it.getEndDate(),
+                                it.getStatus()
+                        )).toList();
+
         return reservationMap.values().stream().toList();
     }
 
