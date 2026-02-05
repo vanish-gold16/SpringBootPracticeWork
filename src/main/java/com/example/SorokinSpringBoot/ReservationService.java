@@ -44,7 +44,7 @@ public class ReservationService {
                                 it.getStatus()
                         )).toList();
 
-        return reservationMap.values().stream().toList();
+        return reservationList;
     }
 
     public Reservation createReservation(Reservation reservationToCreate) {
