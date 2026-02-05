@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Table(name = "reservations")
 @Entity
-public class ReservaionEntity {
+public class ReservationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,10 +28,10 @@ public class ReservaionEntity {
     @Column(name = "status")
     private ReservationStatus status;
 
-    public ReservaionEntity() {
+    public ReservationEntity() {
     }
 
-    public ReservaionEntity(Long id, Long userId, Long roomId, LocalDate startDate, LocalDate endDate, ReservationStatus status) {
+    public ReservationEntity(Long id, Long userId, Long roomId, LocalDate startDate, LocalDate endDate, ReservationStatus status) {
         this.id = id;
         this.userId = userId;
         this.roomId = roomId;

@@ -1,8 +1,9 @@
 package com.example.SorokinSpringBoot;
 
 import com.example.SorokinSpringBoot.enums.ReservationStatus;
-import com.example.SorokinSpringBoot.models.ReservaionEntity;
+import com.example.SorokinSpringBoot.models.ReservationEntity;
 import com.example.SorokinSpringBoot.models.Reservation;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -25,24 +26,21 @@ public class ReservationService {
     }
 
     public Reservation getReservationById(Long id){
+        ReservationEntity reservationEntity = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(
+                "Not found reservation: " + id
+        ));
 
         return reservationMap.get(id);
     }
 
     public List<Reservation> findAllReservations() {
 
-        List<ReservaionEntity> allEntities = repository.findAll();
+        List<ReservationEntity> allEntities = repository.findAll();
 
         List<Reservation> reservationList = allEntities.stream()
                 .map(it ->
-                        new Reservation(
-                                it.getId(),
-                                it.getUserId(),
-                                it.getRoomId(),
-                                it.getStartDate(),
-                                it.getEndDate(),
-                                it.getStatus()
-                        )).toList();
+                        toDomainReservation(it))
+                        .toList();
 
         return reservationList;
     }
@@ -121,6 +119,19 @@ public class ReservationService {
         }
 
         return false;
+    }
+
+    private Reservation toDomainReservation(
+            ReservationEntity reservation
+    ){
+        return new Reservation(
+                reservation.getId(),
+                reservation.getUserId(),
+                reservation.getRoomId(),
+                reservation.getStartDate(),
+                reservation.getEndDate(),
+                reservation.getStatus()
+        );
     }
 
 }
