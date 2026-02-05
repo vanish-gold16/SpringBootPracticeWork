@@ -1,14 +1,13 @@
-package com.example.SorokinSpringBoot;
+package com.example.SorokinSpringBoot.services;
 
 import com.example.SorokinSpringBoot.enums.ReservationStatus;
 import com.example.SorokinSpringBoot.models.ReservationEntity;
 import com.example.SorokinSpringBoot.models.Reservation;
+import com.example.SorokinSpringBoot.repositories.ReservationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -110,8 +109,8 @@ public class ReservationService {
         var allReservations = repository.findAll();
         for(ReservationEntity existingReservation : allReservations){
             if(reservation.getId().equals(existingReservation.getId())) continue;
-            if(reservation.getRoomId().equals(existingReservation.getRoomId())) continue;
-            if(existingReservation.getStatus().equals(ReservationStatus.CONFIRMED)) continue;
+            if(!reservation.getRoomId().equals(existingReservation.getRoomId())) continue;
+            if(existingReservation.getStatus() != ReservationStatus.CONFIRMED) continue;
             if(reservation.getStartDate().isBefore(existingReservation.getEndDate())
             && existingReservation.getStartDate().isBefore(reservation.getEndDate()))
                 return true;

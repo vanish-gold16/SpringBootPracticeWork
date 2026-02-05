@@ -1,4 +1,4 @@
-package com.example.SorokinSpringBoot;
+package com.example.SorokinSpringBoot.repositories;
 
 import com.example.SorokinSpringBoot.models.ReservationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

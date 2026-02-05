@@ -1,6 +1,6 @@
 package com.example.SorokinSpringBoot.controllers;
 
-import com.example.SorokinSpringBoot.ReservationService;
+import com.example.SorokinSpringBoot.services.ReservationService;
 import com.example.SorokinSpringBoot.models.Reservation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
