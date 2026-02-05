@@ -15,13 +15,11 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class ReservationService {
 
-    private final Map<Long, Reservation> reservationMap;
     private final AtomicLong idCounter;
     private ReservationRepository repository;
 
     public ReservationService(ReservationRepository repository) {
         this.repository = repository;
-        this.reservationMap = new HashMap<>();
         idCounter = new AtomicLong();
     }
 
@@ -69,7 +67,6 @@ public class ReservationService {
                 "Not found reservation: " + id
         ));
 
-        var reservation = reservationMap.get(id);
         if(reservationEntity.getStatus() != ReservationStatus.PENDING)
             throw new NoSuchElementException("Can't modify reservation. Status=" + reservationEntity.getStatus());
         var editedReservation = new ReservationEntity(
@@ -81,8 +78,8 @@ public class ReservationService {
                 ReservationStatus.PENDING
         );
         var savedEntity = repository.save(editedReservation);
-        return toDomainReservation(savedEntity);
 
+        return toDomainReservation(savedEntity);
     }
 
     public void deleteReservation(Long id) {
@@ -110,12 +107,13 @@ public class ReservationService {
     }
 
     private boolean isReservationConflict(ReservationEntity reservation){
-        for(Reservation existingReservation : reservationMap.values()){
-            if(reservation.getId().equals(existingReservation.id())) continue;
-            if(reservation.getRoomId().equals(existingReservation.roomId())) continue;
-            if(existingReservation.status().equals(ReservationStatus.CONFIRMED)) continue;
-            if(reservation.getStartDate().isBefore(existingReservation.endDate())
-            && existingReservation.startDate().isBefore(reservation.getEndDate()))
+        var allReservations = repository.findAll();
+        for(ReservationEntity existingReservation : allReservations){
+            if(reservation.getId().equals(existingReservation.getId())) continue;
+            if(reservation.getRoomId().equals(existingReservation.getRoomId())) continue;
+            if(existingReservation.getStatus().equals(ReservationStatus.CONFIRMED)) continue;
+            if(reservation.getStartDate().isBefore(existingReservation.getEndDate())
+            && existingReservation.getStartDate().isBefore(reservation.getEndDate()))
                 return true;
         }
 
