@@ -28,12 +28,7 @@ public class ReservationController {
             @PathVariable("id") Long id
     ){
         logger.info("Called getReservationById " + id);
-        try{
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(reservationService.getReservationById(id));
-        }catch (NoSuchElementException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(reservationService.getReservationById(id));
 
     }
 
@@ -58,12 +53,8 @@ public class ReservationController {
             @RequestBody Reservation reservationToEdit
     ){
         logger.info("Called editReservation " + reservationToEdit);
-        try{
-            var updated = reservationService.editReservation(id, reservationToEdit);
-            return ResponseEntity.ok(updated);
-        }catch(NoSuchElementException e){
-            return ResponseEntity.status(404).build();
-        }
+        var updated = reservationService.editReservation(id, reservationToEdit);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}/cancel")
@@ -71,12 +62,8 @@ public class ReservationController {
             @PathVariable("id") Long id
     ){
         logger.info("Called deleteReservation " + id);
-        try{
-            reservationService.cancelReservation(id);
-            return ResponseEntity.ok().build();
-        }catch(NoSuchElementException e){
-            return ResponseEntity.status(404).build();
-        }
+        reservationService.cancelReservation(id);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/approve")
