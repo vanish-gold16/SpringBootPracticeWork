@@ -15,29 +15,38 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 
     //List<ReservationEntity> findAllByStatusIs(ReservationStatus status);
 
-    @Query("select r from ReservationEntity r where r.status = :status")
-    List<ReservationEntity> findAllByStatusIs(ReservationStatus status);
-
-    @Query("select r from ReservationEntity r where r.roomId = :roomId")
-    List<ReservationEntity> findAllByRoomId(@Param("roomId") Long roomId);
+//    @Query("select r from ReservationEntity r where r.status = :status")
+//    List<ReservationEntity> findAllByStatusIs(ReservationStatus status);
+//
+//    @Query("select r from ReservationEntity r where r.roomId = :roomId")
+//    List<ReservationEntity> findAllByRoomId(@Param("roomId") Long roomId);
+//
+//    @Transactional
+//    @Modifying
+//    @Query("""
+//             update ReservationEntity r
+//             set r.userId = :userId,
+//                 r.roomId = :roomId,
+//                 r.startDate = :startDate,
+//                 r.endDate = :endDate,
+//                 r.status = :status
+//                 where r.id = :id
+//                        """)
+//    int updateAllFields(
+//            @Param("id") Long id,
+//            @Param("userId") Long userId,
+//            @Param("roomId") Long roomId,
+//            @Param("startDate") LocalDate startDate,
+//            @Param("endDate") LocalDate endDate,
+//            @Param("status") ReservationStatus status
+//            );
 
     @Transactional
     @Modifying
     @Query("""
              update ReservationEntity r
-             set r.userId = :userId,
-                 r.roomId = :roomId,
-                 r.startDate = :startDate,
-                 r.endDate = :endDate,
-                 r.status = :status
+                 set r.status = :status
                  where r.id = :id                                                        
                         """)
-    int updateAllFields(
-            @Param("id") Long id,
-            @Param("userId") Long userId,
-            @Param("roomId") Long roomId,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
-            @Param("status") ReservationStatus status
-            );
+    void setStatus(@Param("id") Long id, @Param("status") ReservationStatus reservationStatus);
 }

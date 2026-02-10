@@ -5,6 +5,9 @@ import com.example.SorokinSpringBoot.models.ReservationEntity;
 import com.example.SorokinSpringBoot.models.Reservation;
 import com.example.SorokinSpringBoot.repositories.ReservationRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +19,8 @@ public class ReservationService {
 
     private final AtomicLong idCounter;
     private ReservationRepository repository;
+
+    private final Logger logger = LoggerFactory.getLogger(ReservationService.class);
 
     public ReservationService(ReservationRepository repository) {
         this.repository = repository;
@@ -81,9 +86,11 @@ public class ReservationService {
         return toDomainReservation(savedEntity);
     }
 
-    public void deleteReservation(Long id) {
+    @Transactional
+    public void cancelReservation(Long id) {
         if(!repository.existsById(id)) throw new NoSuchElementException("Not found reservation: " + id);
-        repository.deleteById(id);
+        repository.setStatus(id, ReservationStatus.CANCELED);
+        logger.info("Successfully cancelled reservation " + id);
     }
 
     public Reservation approveReservation(Long id) {
