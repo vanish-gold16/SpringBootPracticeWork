@@ -16,11 +16,13 @@ public class ReservationService {
 
     private final AtomicLong idCounter;
     private ReservationRepository repository;
+    private final ReservationMapper mapper;
 
     private final Logger logger = LoggerFactory.getLogger(ReservationService.class);
 
-    public ReservationService(ReservationRepository repository) {
+    public ReservationService(ReservationRepository repository, ReservationMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
         idCounter = new AtomicLong();
     }
 
@@ -29,7 +31,7 @@ public class ReservationService {
                 "Not found reservation: " + id
         ));
 
-        return toDomainReservation(reservationEntity);
+        return mapper.toDomain(reservationEntity);
     }
 
     public List<Reservation> findAllReservations() {
@@ -38,7 +40,7 @@ public class ReservationService {
 
         List<Reservation> reservationList = allEntities.stream()
                 .map(it ->
-                        toDomainReservation(it))
+                        mapper.toDomain(it))
                         .toList();
 
         return reservationList;
@@ -59,7 +61,7 @@ public class ReservationService {
                 ReservationStatus.PENDING
         );
         var savedEntity = repository.save(entityToSave);
-        return toDomainReservation(savedEntity);
+        return mapper.toDomain(savedEntity);
     }
 
     public Reservation editReservation(Long id, Reservation reservationToEdit) {
@@ -83,7 +85,7 @@ public class ReservationService {
         );
         var savedEntity = repository.save(editedReservation);
 
-        return toDomainReservation(savedEntity);
+        return mapper.toDomain(savedEntity);
     }
 
     @Transactional
@@ -116,7 +118,7 @@ public class ReservationService {
         reservationEntity.setStatus(ReservationStatus.CONFIRMED);
         repository.save(reservationEntity);
 
-        return toDomainReservation(reservationEntity);
+        return mapper.toDomain(reservationEntity);
     }
 
     private boolean isReservationConflict(
@@ -133,17 +135,6 @@ public class ReservationService {
         return true;
     }
 
-    private Reservation toDomainReservation(
-            ReservationEntity reservation
-    ){
-        return new Reservation(
-                reservation.getId(),
-                reservation.getUserId(),
-                reservation.getRoomId(),
-                reservation.getStartDate(),
-                reservation.getEndDate(),
-                reservation.getStatus()
-        );
-    }
+
 
 }
