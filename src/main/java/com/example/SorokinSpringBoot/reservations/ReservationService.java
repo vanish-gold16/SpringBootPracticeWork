@@ -52,14 +52,12 @@ public class ReservationService {
             throw new IllegalArgumentException("Status should bew empty!");
         if(!reservationToCreate.endDate().isAfter(reservationToCreate.startDate()))
             throw new IllegalArgumentException("Start date must be after end date!");
-        var entityToSave = new ReservationEntity(
-                null,
-                reservationToCreate.userId(),
-                reservationToCreate.roomId(),
-                reservationToCreate.startDate(),
-                reservationToCreate.endDate(),
-                ReservationStatus.PENDING
+
+        var entityToSave = mapper.toEntity(
+                reservationToCreate
         );
+        entityToSave.setStatus(ReservationStatus.PENDING);
+
         var savedEntity = repository.save(entityToSave);
         return mapper.toDomain(savedEntity);
     }
@@ -75,14 +73,10 @@ public class ReservationService {
         if(!reservationToEdit.endDate().isAfter(reservationToEdit.startDate()))
             throw new IllegalArgumentException("Start date must be after end date!");
 
-        var editedReservation = new ReservationEntity(
-                reservationEntity.getId(),
-                reservationToEdit.userId(),
-                reservationToEdit.roomId(),
-                reservationToEdit.startDate(),
-                reservationToEdit.endDate(),
-                ReservationStatus.PENDING
-        );
+        var editedReservation = mapper.toEntity(reservationToEdit);
+        editedReservation.setId(reservationEntity.getId());
+        editedReservation.setStatus(ReservationStatus.PENDING);
+
         var savedEntity = repository.save(editedReservation);
 
         return mapper.toDomain(savedEntity);
