@@ -1,6 +1,5 @@
-package com.example.SorokinSpringBoot.exceptions;
+package com.example.SorokinSpringBoot.web;
 
-import com.example.SorokinSpringBoot.ErrorResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

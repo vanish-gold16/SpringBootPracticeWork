@@ -1,9 +1,5 @@
-package com.example.SorokinSpringBoot.services;
+package com.example.SorokinSpringBoot.reservations;
 
-import com.example.SorokinSpringBoot.enums.ReservationStatus;
-import com.example.SorokinSpringBoot.models.ReservationEntity;
-import com.example.SorokinSpringBoot.models.Reservation;
-import com.example.SorokinSpringBoot.repositories.ReservationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;

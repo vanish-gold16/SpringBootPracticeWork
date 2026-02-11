@@ -1,7 +1,5 @@
-package com.example.SorokinSpringBoot.controllers;
+package com.example.SorokinSpringBoot.reservations;
 
-import com.example.SorokinSpringBoot.services.ReservationService;
-import com.example.SorokinSpringBoot.models.Reservation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -9,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/reservations")

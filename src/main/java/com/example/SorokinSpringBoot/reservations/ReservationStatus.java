@@ -1,4 +1,4 @@
-package com.example.SorokinSpringBoot.enums;
+package com.example.SorokinSpringBoot.reservations;
 
 public enum ReservationStatus {
     PENDING,

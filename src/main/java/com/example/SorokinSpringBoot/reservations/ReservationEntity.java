@@ -1,6 +1,5 @@
-package com.example.SorokinSpringBoot.models;
+package com.example.SorokinSpringBoot.reservations;
 
-import com.example.SorokinSpringBoot.enums.ReservationStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
