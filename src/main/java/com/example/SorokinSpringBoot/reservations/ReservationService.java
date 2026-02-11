@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -106,7 +107,8 @@ public class ReservationService {
         if(reservationEntity.getStatus() != ReservationStatus.PENDING)
             throw new NoSuchElementException("Can't approve reservation. Status=" + reservationEntity.getStatus());
 
-        var isConflict = isReservationConflict(reservationEntity);
+        var isConflict = isReservationConflict(reservationEntity.getRoomId(),
+                reservationEntity.getStartDate(), reservationEntity.getEndDate());
         if(isConflict){
             throw new NoSuchElementException("Can't approve reservation due to conflict. Status=" + reservationEntity.getStatus());
         }
@@ -117,18 +119,18 @@ public class ReservationService {
         return toDomainReservation(reservationEntity);
     }
 
-    private boolean isReservationConflict(ReservationEntity reservation){
-        var allReservations = repository.findAll();
-        for(ReservationEntity existingReservation : allReservations){
-            if(reservation.getId().equals(existingReservation.getId())) continue;
-            if(!reservation.getRoomId().equals(existingReservation.getRoomId())) continue;
-            if(existingReservation.getStatus() != ReservationStatus.CONFIRMED) continue;
-            if(reservation.getStartDate().isBefore(existingReservation.getEndDate())
-            && existingReservation.getStartDate().isBefore(reservation.getEndDate()))
-                return true;
-        }
+    private boolean isReservationConflict(
+            Long roomId,
+            LocalDate startDate,
+            LocalDate endDate
+    ){
+        List<Long> conflictingIds = repository.findConflictReservationsIds(
+                roomId, startDate, endDate, ReservationStatus.CONFIRMED
+        );
 
-        return false;
+        if(conflictingIds.isEmpty()) return false;
+        logger.info("Conflict with id's: "  +  conflictingIds);
+        return true;
     }
 
     private Reservation toDomainReservation(
