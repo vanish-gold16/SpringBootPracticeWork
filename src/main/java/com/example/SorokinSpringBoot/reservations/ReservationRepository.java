@@ -1,7 +1,7 @@
-package com.example.SorokinSpringBoot.repositories;
+package com.example.SorokinSpringBoot.reservations;
 
-import com.example.SorokinSpringBoot.enums.ReservationStatus;
-import com.example.SorokinSpringBoot.models.ReservationEntity;
+import com.example.SorokinSpringBoot.reservations.models.ReservationEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -49,4 +49,29 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
                  where r.id = :id                                                        
                         """)
     void setStatus(@Param("id") Long id, @Param("status") ReservationStatus reservationStatus);
+
+    @Query("""
+            select r.id from ReservationEntity r
+                        where r.roomId =:roomId
+                        and :startDate < r.startDate
+                        and r.startDate < :endDate
+                        and r.status = :status                                                            
+            """)
+    List<Long> findConflictReservationsIds(
+            @Param("roomId") Long roomId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("status") ReservationStatus status
+    );
+
+    @Query("""
+            select r.id from ReservationEntity r
+                        where (:roomId is null or r.roomId =:roomId)
+                        and (:userId is null or r.userId =:userId)                                                                     
+            """)
+    List<ReservationEntity> searchAllByFilter(
+            @Param("roomId") Long roomId,
+            @Param("userId") Long userId,
+            Pageable pageable
+    );
 }

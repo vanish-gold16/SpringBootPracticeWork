@@ -1,6 +1,6 @@
-package com.example.SorokinSpringBoot.models;
+package com.example.SorokinSpringBoot.reservations.models;
 
-import com.example.SorokinSpringBoot.enums.ReservationStatus;
+import com.example.SorokinSpringBoot.reservations.ReservationStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -12,20 +12,20 @@ public class ReservationEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "room_id")
+    @Column(name = "room_id", nullable = false)
     private Long roomId;
 
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(name = "end_date")
+    @Column(name = "end_date",  nullable = false)
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private ReservationStatus status;
 
     public ReservationEntity() {

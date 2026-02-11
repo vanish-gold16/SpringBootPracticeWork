@@ -1,8 +1,6 @@
-package com.example.SorokinSpringBoot.controllers;
+package com.example.SorokinSpringBoot.reservations;
 
-import com.example.SorokinSpringBoot.services.ReservationService;
-import com.example.SorokinSpringBoot.models.Reservation;
-import jakarta.validation.Valid;
+import com.example.SorokinSpringBoot.reservations.models.Reservation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -10,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/reservations")
@@ -30,18 +27,30 @@ public class ReservationController {
     ){
         logger.info("Called getReservationById " + id);
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.getReservationById(id));
-
     }
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> getAllReservations(){
+    public ResponseEntity<List<Reservation>> getAllReservations(
+            @RequestParam(name = "roomId", required = false) Long roomId,
+            @RequestParam(name = "userId", required = false) Long userId,
+            @RequestParam(name = "pageSize", required = false) Integer pageSize,
+            @RequestParam(name = "pageNumber", required = false) Integer pageNumber
+    ){
         logger.info("Called getAllReservations");
-        return ResponseEntity.ok(reservationService.findAllReservations());
+        var filter = new ReservationSearchFilter(
+                roomId,
+                userId,
+                pageSize,
+                pageNumber
+        );
+        return ResponseEntity.ok(reservationService.searchAllByFilter(
+               filter
+        ));
     }
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(
-            @RequestBody @Valid Reservation reservationToCreate
+            @RequestBody Reservation reservationToCreate
     ){
         logger.info("Called createReservation " + reservationToCreate);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -51,7 +60,7 @@ public class ReservationController {
     @PutMapping("/{id}/edit")
     public ResponseEntity<Reservation> editReservation(
             @PathVariable ("id") Long id,
-            @RequestBody @Valid Reservation reservationToEdit
+            @RequestBody Reservation reservationToEdit
     ){
         logger.info("Called editReservation " + reservationToEdit);
         var updated = reservationService.editReservation(id, reservationToEdit);

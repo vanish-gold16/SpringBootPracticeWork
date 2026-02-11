@@ -1,4 +1,4 @@
-package com.example.SorokinSpringBoot;
+package com.example.SorokinSpringBoot.web;
 
 import java.time.LocalDateTime;
 
