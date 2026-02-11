@@ -1,5 +1,6 @@
 package com.example.SorokinSpringBoot.reservations;
 
+import com.example.SorokinSpringBoot.reservations.models.Reservation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

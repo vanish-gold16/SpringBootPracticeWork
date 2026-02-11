@@ -1,5 +1,6 @@
-package com.example.SorokinSpringBoot.reservations;
+package com.example.SorokinSpringBoot.reservations.models;
 
+import com.example.SorokinSpringBoot.reservations.ReservationStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

@@ -1,6 +1,6 @@
 package com.example.SorokinSpringBoot.reservations;
 
-import org.springframework.boot.data.autoconfigure.web.DataWebProperties;
+import com.example.SorokinSpringBoot.reservations.models.ReservationEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

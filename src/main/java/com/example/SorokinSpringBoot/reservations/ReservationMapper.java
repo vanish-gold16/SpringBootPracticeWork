@@ -1,5 +1,7 @@
 package com.example.SorokinSpringBoot.reservations;
 
+import com.example.SorokinSpringBoot.reservations.models.Reservation;
+import com.example.SorokinSpringBoot.reservations.models.ReservationEntity;
 import org.springframework.stereotype.Component;
 
 @Component

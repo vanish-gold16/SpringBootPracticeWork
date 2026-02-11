@@ -1,5 +1,6 @@
-package com.example.SorokinSpringBoot.reservations;
+package com.example.SorokinSpringBoot.reservations.models;
 
+import com.example.SorokinSpringBoot.reservations.ReservationStatus;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
