@@ -4,6 +4,7 @@ import com.example.SorokinSpringBoot.ErrorResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -41,7 +42,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
     }
 
-    @ExceptionHandler(exception = {IllegalArgumentException.class, IllegalStateException.class})
+    @ExceptionHandler(exception = {
+            IllegalArgumentException.class,
+            IllegalStateException.class,
+            MethodArgumentNotValidException.class
+    })
     public ResponseEntity<ErrorResponseDTO> handleIllegalArgumentException(Exception exception) {
         logger.warning("Handle exception " + exception);
 

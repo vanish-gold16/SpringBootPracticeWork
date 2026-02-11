@@ -2,6 +2,7 @@ package com.example.SorokinSpringBoot.controllers;
 
 import com.example.SorokinSpringBoot.services.ReservationService;
 import com.example.SorokinSpringBoot.models.Reservation;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(
-            @RequestBody Reservation reservationToCreate
+            @RequestBody @Valid Reservation reservationToCreate
     ){
         logger.info("Called createReservation " + reservationToCreate);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -50,7 +51,7 @@ public class ReservationController {
     @PutMapping("/{id}/edit")
     public ResponseEntity<Reservation> editReservation(
             @PathVariable ("id") Long id,
-            @RequestBody Reservation reservationToEdit
+            @RequestBody @Valid Reservation reservationToEdit
     ){
         logger.info("Called editReservation " + reservationToEdit);
         var updated = reservationService.editReservation(id, reservationToEdit);
