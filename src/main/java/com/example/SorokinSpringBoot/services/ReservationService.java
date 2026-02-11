@@ -48,11 +48,11 @@ public class ReservationService {
     }
 
     public Reservation createReservation(Reservation reservationToCreate) {
-        if(reservationToCreate.id() != null && reservationToCreate.status() != null){
-            throw new IllegalArgumentException("ID and status should bew empty!");
-        }
+
         if(reservationToCreate.status() != null)
             throw new IllegalArgumentException("Status should bew empty!");
+        if(!reservationToCreate.endDate().isAfter(reservationToCreate.startDate()))
+            throw new IllegalArgumentException("Start date must be after end date!");
         var entityToSave = new ReservationEntity(
                 null,
                 reservationToCreate.userId(),
@@ -73,6 +73,9 @@ public class ReservationService {
 
         if(reservationEntity.getStatus() != ReservationStatus.PENDING)
             throw new NoSuchElementException("Can't modify reservation. Status=" + reservationEntity.getStatus());
+        if(!reservationToEdit.endDate().isAfter(reservationToEdit.startDate()))
+            throw new IllegalArgumentException("Start date must be after end date!");
+
         var editedReservation = new ReservationEntity(
                 reservationEntity.getId(),
                 reservationToEdit.userId(),
@@ -88,7 +91,13 @@ public class ReservationService {
 
     @Transactional
     public void cancelReservation(Long id) {
-        if(!repository.existsById(id)) throw new NoSuchElementException("Not found reservation: " + id);
+        var reservation = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Not found reservation: " + id));
+
+        if(reservation.getStatus().equals(ReservationStatus.CONFIRMED))
+            throw new IllegalStateException("Cannot cancel approved reservation! Please, contact the manager");
+        if(reservation.getStatus().equals(ReservationStatus.CANCELED))
+            throw new IllegalStateException("Cannot cancel cancelled reservation!");
+
         repository.setStatus(id, ReservationStatus.CANCELED);
         logger.info("Successfully cancelled reservation " + id);
     }
