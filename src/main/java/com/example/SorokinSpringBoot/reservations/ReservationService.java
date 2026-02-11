@@ -1,5 +1,6 @@
 package com.example.SorokinSpringBoot.reservations;
 
+import com.example.SorokinSpringBoot.reservations.availability.ReservationAvailabilityService;
 import com.example.SorokinSpringBoot.reservations.models.Reservation;
 import com.example.SorokinSpringBoot.reservations.models.ReservationEntity;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,12 +21,14 @@ public class ReservationService {
     private final AtomicLong idCounter;
     private ReservationRepository repository;
     private final ReservationMapper mapper;
+    private final ReservationAvailabilityService availabilityService;
 
-    private final Logger logger = LoggerFactory.getLogger(ReservationService.class);
+    private final Logger log = LoggerFactory.getLogger(ReservationService.class);
 
-    public ReservationService(ReservationRepository repository, ReservationMapper mapper) {
+    public ReservationService(ReservationRepository repository, ReservationMapper mapper, ReservationAvailabilityService availabilityService) {
         this.repository = repository;
         this.mapper = mapper;
+        this.availabilityService = availabilityService;
         idCounter = new AtomicLong();
     }
 
@@ -107,7 +110,7 @@ public class ReservationService {
             throw new IllegalStateException("Cannot cancel cancelled reservation!");
 
         repository.setStatus(id, ReservationStatus.CANCELED);
-        logger.info("Successfully cancelled reservation " + id);
+        log.info("Successfully cancelled reservation " + id);
     }
 
     public Reservation approveReservation(Long id) {
@@ -118,9 +121,9 @@ public class ReservationService {
         if(reservationEntity.getStatus() != ReservationStatus.PENDING)
             throw new NoSuchElementException("Can't approve reservation. Status=" + reservationEntity.getStatus());
 
-        var isConflict = isReservationConflict(reservationEntity.getRoomId(),
+        var isAvailable = availabilityService.isReservationAvailable(reservationEntity.getRoomId(),
                 reservationEntity.getStartDate(), reservationEntity.getEndDate());
-        if(isConflict){
+        if(!isAvailable){
             throw new NoSuchElementException("Can't approve reservation due to conflict. Status=" + reservationEntity.getStatus());
         }
 
@@ -129,21 +132,5 @@ public class ReservationService {
 
         return mapper.toDomain(reservationEntity);
     }
-
-    private boolean isReservationConflict(
-            Long roomId,
-            LocalDate startDate,
-            LocalDate endDate
-    ){
-        List<Long> conflictingIds = repository.findConflictReservationsIds(
-                roomId, startDate, endDate, ReservationStatus.CONFIRMED
-        );
-
-        if(conflictingIds.isEmpty()) return false;
-        logger.info("Conflict with id's: "  +  conflictingIds);
-        return true;
-    }
-
-
 
 }
